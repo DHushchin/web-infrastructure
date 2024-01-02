@@ -1,32 +1,23 @@
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
-
 Vagrant.configure("2") do |config|
   config.vm.box = "generic/ubuntu1804"
   config.vm.synced_folder ".", "/vagrant"
 
 config.vm.provision "shell", inline: <<-SHELL
-    # Update and upgrade the system
     apt-get update
     apt-get upgrade -y
 
-    # Install Nginx
     apt-get install -y nginx
 
-    # Remove the default Nginx configuration file
     rm -f /etc/nginx/sites-enabled/default
 
-    # Copy the custom Nginx configuration file from the /vagrant directory
     cp /vagrant/nginx.conf /etc/nginx/sites-available/my_site
     ln -s /etc/nginx/sites-available/my_site /etc/nginx/sites-enabled/my_site
 
-    # Copy the index.html file from the /vagrant directory to the Nginx document root
     cp /vagrant/index.html /var/www/html/index.html
 
-    # Restart Nginx to apply the changes
     systemctl restart nginx
 SHELL
 
 
-  config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", guest: 80, host: 8016
 end
